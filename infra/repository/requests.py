@@ -23,7 +23,6 @@ class RequestsRepo:
         """
         return UserRepo(db_session=self.session)
 
-
     @property
-    def subscription(self)-> SubscriptionRepo:
+    def subscription(self) -> SubscriptionRepo:
         return SubscriptionRepo(db_session=self.session)

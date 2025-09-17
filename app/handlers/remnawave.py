@@ -39,10 +39,8 @@ async def cb_create_user(callback: CallbackQuery, repo: RequestsRepo, user: Tele
 
         )
 
-
     else:
         logger.info(f"created user: {created}")
-
         # logger.info(f"Created key for {tg_id}: {created['vpn_id']} expires {created['expires_at']}")
 
         await callback.message.answer(

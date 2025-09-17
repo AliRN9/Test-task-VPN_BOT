@@ -2,7 +2,6 @@ from typing import Optional
 from sqlalchemy import case, literal
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.sql import func
-from sqlalchemy import select
 
 from infra.models.user import TelegramUser
 from infra.repository.base import BaseRepo
