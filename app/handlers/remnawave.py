@@ -31,9 +31,14 @@ async def cb_create_user(callback: CallbackQuery, repo: RequestsRepo, user: Tele
             tag="telegram",
             telegram_id=tg_id
         )
-
     except RemnawaveError as e:
-        await callback.message.answer(f"Remnawave ошибка ({e.status}): {e.detail}")
+        await callback.message.answer(
+            f"Remnawave ошибка ({e.status}):\n{e.detail[:5000]}",
+            parse_mode=None,
+            disable_web_page_preview=True
+
+        )
+
 
     else:
         logger.info(f"created user: {created}")
