@@ -56,15 +56,18 @@ class RemnawaveClient:
 
         }
         logging.info(f"payload: {payload}")
+        logging.info(f"headers: {self._headers()}")
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=self.timeout)) as client:
-            async with client.post(f"{self.base_url}/users", headers=self._headers(), json=payload) as request:
+            async with client.post(f"{self.base_url}/users", headers=self._headers(), json=payload) as response:
                 # request.raise_for_status()
-                if request.status == 201:
-
-                    return await request.json(content_type=None)
+                if response.status == 201:
+                    return await response.json(content_type=None)
                 else:
-                    detail = (await request.text())[:100]
-                    raise RemnawaveError(request.status, detail)
+                    try:
+                        error_data = await response.json(content_type=None)
+                    except aiohttp.ContentTypeError:
+                        error_data = await response.text()[:1000]
+                    raise RemnawaveError(response.status, error_data)
 
     async def register_service(self):
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=self.timeout)) as client:

@@ -33,7 +33,7 @@ async def cb_create_user(callback: CallbackQuery, repo: RequestsRepo, user: Tele
         )
     except RemnawaveError as e:
         await callback.message.answer(
-            f"Remnawave ошибка ({e.status}):\n{e.detail[:5000]}",
+            f"Remnawave ошибка ({e.status}):\n{e.detail}",
             parse_mode=None,
             disable_web_page_preview=True
 
