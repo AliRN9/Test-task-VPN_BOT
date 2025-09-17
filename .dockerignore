@@ -1,0 +1,42 @@
+# Игнорируемые файлы и директории
+.git
+.gitignore
+README.md
+LICENSE
+.dockerignore
+Dockerfile
+
+# Файлы разработки
+.env
+.env.local
+.env.dev
+.env.test
+
+# Логи и кэш
+*.log
+logs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Виртуальные окружения
+venv/
+env/
+.venv/
+
+# Файлы редакторов
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Файлы Poetry
+#poetry.lock
+#pyproject.toml
+
+# Документация
+docs/
