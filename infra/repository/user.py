@@ -1,33 +1,16 @@
-from typing import Optional
-from sqlalchemy import case, literal
+from sqlalchemy import case, literal, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.sql import func
 
 from infra.models.user import TelegramUser
 from infra.repository.base import BaseRepo
+from infra.shema.user import UserCreateShema
 
 
 class UserRepo(BaseRepo):
-    async def get_or_create_user(
-        self,
-        user_id: int,
-        username: Optional[str] = None,
-        last_name: Optional[str] = None,
-        first_name: Optional[str] = None,
-        referral_link: Optional[str] = None,
-    ):
-        if referral_link is None:
-            referral_link = "start"
-
-        insert_values = {
-            "tg_user_id": user_id,
-            "username": username,
-            "last_name": last_name,
-            "first_name": first_name,
-            "referral_link": referral_link,
-        }
-
-        stmt = insert(TelegramUser).values(**insert_values)
+    async def get_or_create_user(self, user: UserCreateShema):
+        values = user.model_dump(exclude_unset=True)
+        stmt = insert(TelegramUser).values(**values)
         ex = stmt.excluded
 
         upsert = (
@@ -54,3 +37,9 @@ class UserRepo(BaseRepo):
         user = res.scalar_one()
         await self.db_session.commit()
         return user
+
+    async def get_user_by_tg_id(self, tg_user_id: int):
+        res = await self.db_session.execute(
+            select(TelegramUser).where(TelegramUser.tg_user_id == tg_user_id)
+        )
+        return res.scalar_one_or_none()

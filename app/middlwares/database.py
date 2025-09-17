@@ -5,6 +5,7 @@ from aiogram.types import Message
 
 from infra import get_db_session
 from infra.repository.requests import RequestsRepo
+from infra.shema.user import UserCreateShema
 
 
 class DatabaseMiddleware(BaseMiddleware):
@@ -26,18 +27,18 @@ class DatabaseMiddleware(BaseMiddleware):
 
         async with self.session_pool() as session:
             repo = RequestsRepo(session)
-            user = await repo.users.get_or_create_user(
-                event.from_user.id,
-                event.from_user.username,
-                event.from_user.first_name,
-                event.from_user.last_name,
-                referral
+            user = await repo.users.get_or_create_user(UserCreateShema(
+                tg_user_id=event.from_user.id,
+                username=event.from_user.username,
+                first_name=event.from_user.first_name,
+                last_name=event.from_user.last_name,
+                referral_link=referral)
             )
 
             # прокидываем зависимости
             data["repo"] = repo
             data["user"] = user
 
-            # data["db_session"] = self.session_pool  # если где-то ещё нужно открыть сессию вручную
+            data["db_session"] = self.session_pool  # если где-то ещё нужно открыть сессию вручную
 
             return await handler(event, data)
